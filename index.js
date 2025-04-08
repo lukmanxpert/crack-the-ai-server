@@ -62,4 +62,20 @@ app.get("/rumor-test", async (req, res) => {
   res.send(response1.text);
 });
 
+app.get("/generate-json", async (req, res) => {
+  const prompt = req.query?.prompt;
+  const query = `generate and give json data using the prompt, ${req.query?.prompt}`;
+  if (!prompt) {
+    return res.send({ message: "please provide me a prompt in the query." });
+  }
+  const response = await ai.models.generateContent({
+    model: "gemini-2.0-flash",
+    contents: query,
+  });
+  const jsonData = response.text.slice(7, -4)
+  const data = JSON.parse(jsonData)
+  console.log(data);
+  res.send(data);
+});
+
 app.listen(port, () => console.log("App is running at port", port));
